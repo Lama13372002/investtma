@@ -124,76 +124,89 @@ export function DashboardTab() {
         <Card className={`balance-card glow-effect transition-all duration-700 ${
           isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 relative">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg text-foreground">Available Balance</CardTitle>
+              <CardTitle className="text-lg font-bold text-white/95">Available Balance</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setBalanceVisible(!balanceVisible)}
-                className="text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110 rounded-full w-8 h-8 p-0"
               >
                 {balanceVisible ? <Eye size={16} /> : <EyeOff size={16} />}
               </Button>
             </div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10 opacity-30"></div>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-4">
-              <div className={`text-3xl font-bold text-primary transition-all duration-300 ${
+          <CardContent className="pt-0 relative">
+            <div className="space-y-6">
+              <div className={`text-4xl font-bold text-primary transition-all duration-300 quantum-glow ${
                 balanceVisible ? 'scale-100' : 'scale-95'
               }`}>
                 {formatBalance(mockData.balance.available)}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1 p-3 rounded-lg bg-warning/5 border border-warning/20 transition-all duration-300 hover:bg-warning/10">
-                  <p className="text-xs text-muted-foreground">Locked</p>
-                  <p className="text-sm font-medium text-warning">
+                <div className="space-y-1 p-4 rounded-lg glass-card transition-all duration-300 hover:bg-warning/5 group hover:border-warning/30 hover:shadow-lg hover:shadow-warning/5">
+                  <p className="text-xs text-muted-foreground group-hover:text-warning/80 transition-colors duration-300">Locked</p>
+                  <p className="text-sm font-medium text-warning/90 group-hover:text-warning transition-colors duration-300">
                     {formatBalance(mockData.balance.locked)}
                   </p>
                 </div>
-                <div className="space-y-1 p-3 rounded-lg bg-primary/5 border border-primary/20 transition-all duration-300 hover:bg-primary/10">
-                  <p className="text-xs text-muted-foreground">Bonus</p>
-                  <p className="text-sm font-medium text-primary">
+                <div className="space-y-1 p-4 rounded-lg glass-card transition-all duration-300 hover:bg-primary/5 group hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+                  <p className="text-xs text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">Bonus</p>
+                  <p className="text-sm font-medium text-primary/90 group-hover:text-primary transition-colors duration-300">
                     {formatBalance(mockData.balance.bonus)}
                   </p>
                 </div>
               </div>
 
-              <div className="flex space-x-2 pt-2">
+              <div className="flex space-x-3 pt-4">
                 <Dialog open={depositOpen} onOpenChange={setDepositOpen}>
                   <DialogTrigger asChild>
-                    <Button className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
-                      <ArrowDownRight size={16} className="mr-2" />
+                    <Button
+                      className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 h-12 rounded-xl"
+                      size="default"
+                      onClick={() => setDepositOpen(true)}
+                    >
+                      <ArrowDownRight size={18} className="mr-2" />
                       Deposit
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Deposit USDT</DialogTitle>
+                  <DialogContent className="bg-gradient-to-b from-card/95 to-card border border-white/10 shadow-xl">
+                    <DialogHeader className="pb-2">
+                      <DialogTitle className="text-xl font-bold text-white flex items-center">
+                        <div className="mr-3 bg-primary/10 rounded-full p-2">
+                          <ArrowDownRight size={20} className="text-primary" />
+                        </div>
+                        Deposit USDT
+                      </DialogTitle>
                     </DialogHeader>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5 relative">
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl -z-10 opacity-20"></div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="deposit-amount">Amount (USDT)</Label>
+                        <Label htmlFor="deposit-amount" className="text-white/90 font-medium">Amount (USDT)</Label>
                         <Input
                           id="deposit-amount"
                           type="number"
                           placeholder="Minimum: 10 USDT"
                           value={depositAmount}
                           onChange={(e) => setDepositAmount(e.target.value)}
+                          className="border-white/10 bg-white/5 focus:border-primary/50 transition-all duration-300 h-12"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="deposit-network">Network</Label>
+                        <Label htmlFor="deposit-network" className="text-white/90 font-medium">Network</Label>
                         <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-                          <SelectTrigger>
+                          <SelectTrigger className="border-white/10 bg-white/5 focus:border-primary/50 transition-all duration-300 h-12">
                             <SelectValue placeholder="Select network" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-card border border-white/10">
                             {networks.map((network) => (
-                              <SelectItem key={network.value} value={network.value}>
+                              <SelectItem key={network.value} value={network.value} className="focus:bg-primary/10">
                                 {network.label}
                               </SelectItem>
                             ))}
@@ -201,20 +214,29 @@ export function DashboardTab() {
                         </Select>
                       </div>
 
-                      <div className="bg-muted/20 rounded-lg p-3">
-                        <p className="text-sm text-muted-foreground">
-                          Network: {networks.find(n => n.value === selectedNetwork)?.label}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Fee: {networks.find(n => n.value === selectedNetwork)?.fee}
-                        </p>
+                      <div className="bg-gradient-to-r from-primary/5 to-transparent rounded-xl p-4 border border-primary/10">
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="text-white/70">Network:</span>
+                          <span className="text-primary font-medium">{networks.find(n => n.value === selectedNetwork)?.label}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-white/70">Fee:</span>
+                          <span className="text-primary font-medium">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
+                        </div>
                       </div>
 
-                      <div className="flex space-x-2">
-                        <Button variant="outline" onClick={() => setDepositOpen(false)} className="flex-1">
+                      <div className="flex space-x-3 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setDepositOpen(false)}
+                          className="flex-1 h-12 border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300"
+                        >
                           Cancel
                         </Button>
-                        <Button onClick={handleDeposit} className="flex-1 deposit-button">
+                        <Button
+                          onClick={handleDeposit}
+                          className="flex-1 deposit-button h-12 rounded-xl"
+                        >
                           Generate Address
                         </Button>
                       </div>
@@ -224,47 +246,60 @@ export function DashboardTab() {
 
                 <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
                   <DialogTrigger asChild>
-                    <Button className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
-                      <ArrowUpRight size={16} className="mr-2" />
+                    <Button
+                      className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 h-12 rounded-xl"
+                      size="default"
+                      onClick={() => setWithdrawOpen(true)}
+                    >
+                      <ArrowUpRight size={18} className="mr-2" />
                       Withdraw
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Withdraw USDT</DialogTitle>
+                  <DialogContent className="bg-gradient-to-b from-card/95 to-card border border-white/10 shadow-xl">
+                    <DialogHeader className="pb-2">
+                      <DialogTitle className="text-xl font-bold text-white flex items-center">
+                        <div className="mr-3 bg-destructive/10 rounded-full p-2">
+                          <ArrowUpRight size={20} className="text-destructive" />
+                        </div>
+                        Withdraw USDT
+                      </DialogTitle>
                     </DialogHeader>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5 relative">
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-destructive/10 rounded-full blur-3xl -z-10 opacity-20"></div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="withdraw-amount">Amount (USDT)</Label>
+                        <Label htmlFor="withdraw-amount" className="text-white/90 font-medium">Amount (USDT)</Label>
                         <Input
                           id="withdraw-amount"
                           type="number"
                           placeholder="Minimum: 10 USDT"
                           value={withdrawAmount}
                           onChange={(e) => setWithdrawAmount(e.target.value)}
+                          className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="withdraw-address">Wallet Address</Label>
+                        <Label htmlFor="withdraw-address" className="text-white/90 font-medium">Wallet Address</Label>
                         <Input
                           id="withdraw-address"
                           placeholder="Enter your wallet address"
                           value={withdrawAddress}
                           onChange={(e) => setWithdrawAddress(e.target.value)}
+                          className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="withdraw-network">Network</Label>
+                        <Label htmlFor="withdraw-network" className="text-white/90 font-medium">Network</Label>
                         <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-                          <SelectTrigger>
+                          <SelectTrigger className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12">
                             <SelectValue placeholder="Select network" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-card border border-white/10">
                             {networks.map((network) => (
-                              <SelectItem key={network.value} value={network.value}>
+                              <SelectItem key={network.value} value={network.value} className="focus:bg-destructive/10">
                                 {network.label}
                               </SelectItem>
                             ))}
@@ -272,26 +307,33 @@ export function DashboardTab() {
                         </Select>
                       </div>
 
-                      <div className="bg-muted/20 rounded-lg p-3">
+                      <div className="bg-gradient-to-r from-destructive/5 to-transparent rounded-xl p-4 border border-destructive/10">
                         <div className="flex justify-between text-sm">
-                          <span>Amount:</span>
-                          <span>{withdrawAmount || '0'} USDT</span>
+                          <span className="text-white/70">Amount:</span>
+                          <span className="text-white font-medium">{withdrawAmount || '0'} USDT</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span>Fee:</span>
-                          <span>{networks.find(n => n.value === selectedNetwork)?.fee}</span>
+                          <span className="text-white/70">Fee:</span>
+                          <span className="text-white/90">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
                         </div>
-                        <div className="flex justify-between text-sm font-medium border-t pt-2 mt-2">
-                          <span>You will receive:</span>
-                          <span>{withdrawAmount ? (parseFloat(withdrawAmount) - parseFloat(networks.find(n => n.value === selectedNetwork)?.fee?.split(' ')[0] || '0')).toFixed(2) : '0'} USDT</span>
+                        <div className="flex justify-between text-sm font-medium border-t border-destructive/10 pt-3 mt-3">
+                          <span className="text-white/80">You will receive:</span>
+                          <span className="text-destructive/90 font-bold">{withdrawAmount ? (parseFloat(withdrawAmount) - parseFloat(networks.find(n => n.value === selectedNetwork)?.fee?.split(' ')[0] || '0')).toFixed(2) : '0'} USDT</span>
                         </div>
                       </div>
 
-                      <div className="flex space-x-2">
-                        <Button variant="outline" onClick={() => setWithdrawOpen(false)} className="flex-1">
+                      <div className="flex space-x-3 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setWithdrawOpen(false)}
+                          className="flex-1 h-12 border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300"
+                        >
                           Cancel
                         </Button>
-                        <Button onClick={handleWithdraw} className="flex-1 withdraw-button">
+                        <Button
+                          onClick={handleWithdraw}
+                          className="flex-1 withdraw-button h-12 rounded-xl"
+                        >
                           Submit Withdrawal
                         </Button>
                       </div>
