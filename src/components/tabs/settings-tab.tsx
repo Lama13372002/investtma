@@ -12,7 +12,8 @@ import {
   CheckCircle,
   Clock,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  Settings
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -143,88 +144,111 @@ export function SettingsTab() {
   return (
     <div className="space-y-6">
       {/* User Profile Card */}
-      <Card className="balance-card">
+      <Card className="balance-card overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-30 -z-10"></div>
         <CardContent className="pt-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-              <User size={32} className="text-primary-foreground" />
+          <div className="flex items-center space-x-5">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-xl shadow-primary/20 ring-4 ring-white/5 shine-effect">
+              <User size={36} className="text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold">Test User</h3>
-              <p className="text-sm text-muted-foreground">@testuser</p>
-              <p className="text-xs text-muted-foreground">ID: 123456789</p>
+              <h3 className="text-xl font-bold text-white">Test User</h3>
+              <p className="text-sm text-primary/90 font-medium">@testuser</p>
+              <p className="text-xs text-white/60 mt-1">ID: 123456789</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* KYC Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="text-primary" size={20} />
-            <span>Verification Status</span>
+      <Card className="glass-card overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-bold text-white/95 flex items-center">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+              <Shield size={16} className="text-primary" />
+            </div>
+            Verification Status
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                {getKYCStatusIcon()}
+          <div className="space-y-5 pt-2">
+            <div className="flex items-center justify-between p-4 rounded-lg glass-card border border-white/5 hover:border-primary/20 transition-all duration-300 group">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shadow-lg shadow-primary/5 group-hover:scale-110 transition-all duration-300">
+                  {getKYCStatusIcon()}
+                </div>
                 <div>
-                  <p className="font-medium">KYC Verification</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-bold text-white/90">KYC Verification</p>
+                  <p className="text-sm text-white/60 group-hover:text-primary/70 transition-colors duration-300">
                     Identity verification required for withdrawals
                   </p>
                 </div>
               </div>
-              <Badge variant="outline" className={getKYCStatusColor()}>
+              <Badge variant="outline" className={`${getKYCStatusColor()} px-3 py-1 group-hover:bg-white/5 transition-all duration-300`}>
                 {getKYCStatusText()}
               </Badge>
             </div>
 
             {kycStatus === 'not_started' && (
-              <div className="space-y-3">
-                <div className="bg-muted/20 rounded-lg p-3">
-                  <p className="text-sm text-muted-foreground">
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-primary/5 to-transparent rounded-xl p-4 border border-primary/10">
+                  <p className="text-sm text-white/80 font-medium mb-2">
                     Complete KYC verification to unlock:
                   </p>
-                  <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-                    <li>• Unlimited withdrawals</li>
-                    <li>• Higher investment limits</li>
-                    <li>• Enhanced security</li>
+                  <ul className="text-sm text-white/70 mt-2 space-y-2">
+                    <li className="flex items-center">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                        <CheckCircle size={12} className="text-primary" />
+                      </div>
+                      Unlimited withdrawals
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                        <CheckCircle size={12} className="text-primary" />
+                      </div>
+                      Higher investment limits
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                        <CheckCircle size={12} className="text-primary" />
+                      </div>
+                      Enhanced security
+                    </li>
                   </ul>
                 </div>
-                <Button onClick={handleStartKYC} className="w-full deposit-button">
+                <Button onClick={handleStartKYC} className="w-full deposit-button h-12 rounded-xl">
                   Start Verification
                 </Button>
               </div>
             )}
 
             {kycStatus === 'pending' && (
-              <div className="bg-warning/5 border border-warning/20 rounded-lg p-3">
-                <p className="text-sm text-warning">
+              <div className="bg-gradient-to-r from-warning/10 to-transparent rounded-xl p-4 border border-warning/20">
+                <p className="text-sm text-warning font-medium flex items-center">
+                  <Clock size={16} className="mr-2" />
                   Your verification is being reviewed. This usually takes 24-48 hours.
                 </p>
               </div>
             )}
 
             {kycStatus === 'completed' && (
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
-                <p className="text-sm text-primary">
-                  ✓ Your account is fully verified! You can now use all features.
+              <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-xl p-4 border border-primary/20">
+                <p className="text-sm text-primary font-medium flex items-center">
+                  <CheckCircle size={16} className="mr-2" />
+                  Your account is fully verified! You can now use all features.
                 </p>
               </div>
             )}
 
             {kycStatus === 'declined' && (
-              <div className="space-y-3">
-                <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-3">
-                  <p className="text-sm text-destructive">
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-destructive/10 to-transparent rounded-xl p-4 border border-destructive/20">
+                  <p className="text-sm text-destructive font-medium flex items-center">
+                    <XCircle size={16} className="mr-2" />
                     Verification was declined. Please review your documents and try again.
                   </p>
                 </div>
-                <Button onClick={handleStartKYC} variant="outline" className="w-full">
+                <Button onClick={handleStartKYC} variant="outline" className="w-full h-12 rounded-xl border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300">
                   Retry Verification
                 </Button>
               </div>
@@ -235,25 +259,32 @@ export function SettingsTab() {
 
       {/* Settings Sections */}
       {settingsSections.map((section, sectionIndex) => (
-        <Card key={sectionIndex}>
-          <CardHeader>
-            <CardTitle>{section.title}</CardTitle>
+        <Card key={sectionIndex} className="glass-card overflow-hidden">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg font-bold text-white/95 flex items-center">
+              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                {section.title === 'Account' && <User size={14} className="text-primary" />}
+                {section.title === 'Preferences' && <Settings size={14} className="text-primary" />}
+                {section.title === 'Support' && <HelpCircle size={14} className="text-primary" />}
+              </div>
+              {section.title}
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-1">
+          <CardContent className="pt-2">
+            <div className="space-y-3">
               {section.items.map((item, itemIndex) => (
                 <div key={itemIndex}>
                   <div
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/20 transition-colors cursor-pointer"
+                    className="flex items-center justify-between p-4 rounded-lg glass-card border border-white/5 hover:border-primary/20 hover:bg-white/5 transition-all duration-300 cursor-pointer group"
                     onClick={item.action}
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="text-muted-foreground">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center group-hover:scale-110 transition-all duration-300 text-primary">
                         {item.icon}
                       </div>
                       <div>
-                        <p className="font-medium">{item.label}</p>
-                        <p className="text-sm text-muted-foreground">{item.value}</p>
+                        <p className="font-bold text-white/90 group-hover:text-white transition-colors duration-300">{item.label}</p>
+                        <p className="text-sm text-white/60 group-hover:text-primary/80 transition-colors duration-300">{item.value}</p>
                       </div>
                     </div>
 
@@ -262,12 +293,12 @@ export function SettingsTab() {
                         checked={item.checked}
                         onCheckedChange={item.onToggle}
                         onClick={(e) => e.stopPropagation()}
+                        className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                       />
                     ) : (
-                      <ChevronRight size={16} className="text-muted-foreground" />
+                      <ChevronRight size={18} className="text-primary/50 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
                     )}
                   </div>
-                  {itemIndex < section.items.length - 1 && <Separator />}
                 </div>
               ))}
             </div>
@@ -276,17 +307,18 @@ export function SettingsTab() {
       ))}
 
       {/* App Info */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mx-auto">
-              <span className="text-xl font-bold text-primary-foreground">Q</span>
+      <Card className="glass-card shine-effect overflow-hidden relative border border-white/10 group hover:border-primary/20 transition-all duration-300">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-20 transition-all duration-300 -z-10"></div>
+        <CardContent className="pt-8 pb-8">
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mx-auto shadow-xl shadow-primary/20 ring-4 ring-white/5 group-hover:scale-110 transition-all duration-500">
+              <span className="text-2xl font-bold text-primary-foreground">Q</span>
             </div>
-            <h3 className="font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            <h3 className="text-xl font-bold text-white quantum-glow tracking-wider">
               QUANTUM
             </h3>
-            <p className="text-sm text-muted-foreground">Version 1.0.0</p>
-            <p className="text-xs text-muted-foreground">© 2024 Quantum Investment</p>
+            <p className="text-sm text-primary/80 font-medium">Version 1.0.0</p>
+            <p className="text-xs text-white/60">© 2024 Quantum Investment</p>
           </div>
         </CardContent>
       </Card>
