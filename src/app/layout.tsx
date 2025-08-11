@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { TelegramProvider } from "@/components/providers/telegram-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <script src="https://telegram.org/js/telegram-web-app.js" />
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className={inter.className}>
         <TelegramProvider>
