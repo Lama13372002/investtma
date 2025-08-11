@@ -1,0 +1,187 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, Users, Eye, EyeOff } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+
+export function DashboardTab() {
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger animation after mount
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Mock data - в реальном приложении это будет из API
+  const mockData = {
+    balance: {
+      available: 1250.50,
+      locked: 500.00,
+      bonus: 75.25,
+      total: 1825.75
+    },
+    stats: {
+      totalProfit: 325.75,
+      dailyProfit: 12.50,
+      roi: 15.2,
+      activeInvestments: 3,
+      totalReferrals: 8,
+      weeklyGrowth: 8.3
+    }
+  };
+
+  const formatBalance = (amount: number) => {
+    return balanceVisible ? `${amount.toFixed(2)} USDT` : '••••• USDT';
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Balance Cards */}
+      <div className="space-y-4">
+        {/* Main Balance Card */}
+        <Card className={`balance-card glow-effect transition-all duration-700 ${
+          isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-foreground">Available Balance</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setBalanceVisible(!balanceVisible)}
+                className="text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110"
+              >
+                {balanceVisible ? <Eye size={16} /> : <EyeOff size={16} />}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-4">
+              <div className={`text-3xl font-bold text-primary transition-all duration-300 ${
+                balanceVisible ? 'scale-100' : 'scale-95'
+              }`}>
+                {formatBalance(mockData.balance.available)}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1 p-3 rounded-lg bg-warning/5 border border-warning/20 transition-all duration-300 hover:bg-warning/10">
+                  <p className="text-xs text-muted-foreground">Locked</p>
+                  <p className="text-sm font-medium text-warning">
+                    {formatBalance(mockData.balance.locked)}
+                  </p>
+                </div>
+                <div className="space-y-1 p-3 rounded-lg bg-primary/5 border border-primary/20 transition-all duration-300 hover:bg-primary/10">
+                  <p className="text-xs text-muted-foreground">Bonus</p>
+                  <p className="text-sm font-medium text-primary">
+                    {formatBalance(mockData.balance.bonus)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex space-x-2 pt-2">
+                <Button className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
+                  <ArrowDownRight size={16} className="mr-2" />
+                  Deposit
+                </Button>
+                <Button className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
+                  <ArrowUpRight size={16} className="mr-2" />
+                  Withdraw
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* ROI Card */}
+        <Card className={`investment-card transition-all duration-700 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 ${
+          isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`} style={{ animationDelay: '100ms' }}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center transition-all duration-300 hover:bg-primary/20 hover:scale-110">
+                  <TrendingUp size={20} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">ROI</p>
+                  <p className="text-2xl font-bold text-primary transition-all duration-300 hover:scale-105">
+                    {mockData.stats.roi}%
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">Daily Profit</p>
+                <p className="text-lg font-semibold text-primary transition-all duration-300 hover:scale-105">
+                  +{formatBalance(mockData.stats.dailyProfit)}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Performance Section */}
+      <div className={`space-y-4 transition-all duration-700 ${
+        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+      }`} style={{ animationDelay: '200ms' }}>
+        <h3 className="text-lg font-semibold">Performance</h3>
+
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Weekly Growth</span>
+                <Badge variant="outline" className="text-primary border-primary/20 animate-pulse">
+                  +{mockData.stats.weeklyGrowth}%
+                </Badge>
+              </div>
+              <Progress value={mockData.stats.weeklyGrowth * 5} className="h-2 transition-all duration-1000" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <CardContent className="p-4 text-center">
+              <Wallet size={24} className="mx-auto mb-2 text-primary transition-all duration-300 group-hover:scale-110" />
+              <p className="text-2xl font-bold transition-all duration-300 group-hover:text-primary">{mockData.stats.activeInvestments}</p>
+              <p className="text-xs text-muted-foreground">Active Plans</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <CardContent className="p-4 text-center">
+              <Users size={24} className="mx-auto mb-2 text-primary transition-all duration-300 group-hover:scale-110" />
+              <p className="text-2xl font-bold transition-all duration-300 group-hover:text-primary">{mockData.stats.totalReferrals}</p>
+              <p className="text-xs text-muted-foreground">Referrals</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className={`space-y-4 transition-all duration-700 ${
+        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+      }`} style={{ animationDelay: '300ms' }}>
+        <h3 className="text-lg font-semibold">Quick Actions</h3>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Button variant="outline" className="h-16 flex-col space-y-1 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-primary/50 group">
+            <TrendingUp size={20} className="transition-all duration-300 group-hover:scale-110 group-hover:text-primary" />
+            <span className="text-xs transition-all duration-300 group-hover:text-primary">Invest Now</span>
+          </Button>
+
+          <Button variant="outline" className="h-16 flex-col space-y-1 promote-button transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+            <Users size={20} className="transition-all duration-300 group-hover:scale-110" />
+            <span className="text-xs transition-all duration-300">Invite Friends</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
