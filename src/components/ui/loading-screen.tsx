@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export function LoadingScreen() {
   const [dots, setDots] = useState('');
@@ -18,8 +19,14 @@ export function LoadingScreen() {
       <div className="flex flex-col items-center space-y-6">
         {/* Logo */}
         <div className="relative">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center glow-effect">
-            <div className="text-2xl font-bold text-primary-foreground">Q</div>
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center glow-effect overflow-hidden">
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={56}
+              height={56}
+              className="object-contain"
+            />
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary/60 animate-ping opacity-20"></div>
         </div>
