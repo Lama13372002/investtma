@@ -221,7 +221,7 @@ export function WalletTab() {
                   </SelectTrigger>
                   <SelectContent className="bg-card border border-white/10">
                     {networks.map((network) => (
-                      <SelectItem key={network.value} value={network.value} className="focus:bg-primary/10">
+                      <SelectItem key={network.value} value={network.value} className="focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary">
                         {network.label}
                       </SelectItem>
                     ))}
