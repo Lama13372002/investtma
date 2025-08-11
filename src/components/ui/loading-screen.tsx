@@ -19,12 +19,12 @@ export function LoadingScreen() {
       <div className="flex flex-col items-center space-y-6">
         {/* Logo */}
         <div className="relative">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center glow-effect overflow-hidden">
+          <div className="w-20 h-20 flex items-center justify-center">
             <Image
               src="/logo.png"
               alt="Logo"
-              width={56}
-              height={56}
+              width={80}
+              height={80}
               className="object-contain"
             />
           </div>
