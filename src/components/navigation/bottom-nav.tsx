@@ -54,11 +54,11 @@ interface BottomNavProps {
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border/50 safe-area-padding-bottom">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-card via-card/95 to-card/90 backdrop-blur-xl border-t border-white/5 shadow-lg shadow-black/30 safe-area-padding-bottom z-50">
       {/* Active indicator line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-60" />
 
-      <div className="flex items-center justify-around px-2 py-3">
+      <div className="flex items-center justify-around px-3 py-4">
         {navItems.map((item, index) => {
           const isActive = activeTab === item.key;
 
@@ -67,10 +67,10 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               key={item.key}
               onClick={() => onTabChange(item.key)}
               className={cn(
-                "relative flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all duration-300 min-w-0 flex-1 group",
+                "relative flex flex-col items-center justify-center px-3 py-2.5 rounded-2xl transition-all duration-300 min-w-0 flex-1 group",
                 isActive
-                  ? "bg-primary/15 text-primary shadow-lg shadow-primary/20"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                  ? "bg-gradient-to-b from-primary/20 to-primary/5 text-primary shadow-lg shadow-primary/10"
+                  : "text-muted-foreground hover:text-white hover:bg-white/5"
               )}
               style={{
                 animationDelay: `${index * 50}ms`
@@ -78,20 +78,20 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
             >
               {/* Background glow effect for active tab */}
               {isActive && (
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 animate-pulse" />
+                <div className="absolute inset-0 rounded-2xl shine-effect" />
               )}
 
               <div className={cn(
-                "relative transition-all duration-300 mb-1",
+                "relative transition-all duration-300 mb-1.5",
                 isActive
-                  ? "scale-110 text-primary drop-shadow-sm"
-                  : "group-hover:scale-105"
+                  ? "scale-110 text-primary quantum-glow"
+                  : "group-hover:scale-105 group-hover:text-primary/80"
               )}>
                 {item.icon}
 
                 {/* Badge for notifications */}
                 {item.badge && (
-                  <div className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-br from-destructive to-destructive/80 text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-destructive/20 animate-pulse">
                     {item.badge}
                   </div>
                 )}
@@ -100,8 +100,8 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               <span className={cn(
                 "text-xs font-medium transition-all duration-300 relative",
                 isActive
-                  ? "text-primary font-semibold"
-                  : "text-muted-foreground group-hover:text-foreground"
+                  ? "text-primary font-semibold quantum-glow"
+                  : "text-muted-foreground group-hover:text-primary/80"
               )}>
                 {item.label}
 
@@ -112,9 +112,9 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               </span>
 
               {/* Ripple effect on tap */}
-              <div className="absolute inset-0 rounded-xl overflow-hidden">
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
                 <div className={cn(
-                  "absolute inset-0 bg-primary/20 rounded-xl scale-0 group-active:scale-100 transition-transform duration-200 ease-out"
+                  "absolute inset-0 bg-primary/20 rounded-2xl scale-0 group-active:scale-100 transition-transform duration-200 ease-out"
                 )} />
               </div>
             </button>
@@ -123,7 +123,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
       </div>
 
       {/* Bottom safe area for devices with notch */}
-      <div className="h-safe-area-inset-bottom bg-card/50" />
+      <div className="h-safe-area-inset-bottom bg-card/80" />
     </div>
   );
 }
