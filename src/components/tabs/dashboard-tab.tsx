@@ -167,7 +167,6 @@ export function DashboardTab() {
                     <Button
                       className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 h-12 rounded-xl"
                       size="default"
-                      onClick={() => setDepositOpen(true)}
                     >
                       <ArrowDownRight size={18} className="mr-2" />
                       Deposit
@@ -249,7 +248,6 @@ export function DashboardTab() {
                     <Button
                       className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 h-12 rounded-xl"
                       size="default"
-                      onClick={() => setWithdrawOpen(true)}
                     >
                       <ArrowUpRight size={18} className="mr-2" />
                       Withdraw
