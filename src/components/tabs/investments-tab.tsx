@@ -124,41 +124,48 @@ export function InvestmentsTab() {
     <div className="space-y-6">
       {/* Active Investments */}
       {activeInvestments.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Active Investments</h3>
+        <div className="space-y-5">
+          <h3 className="text-lg font-bold text-white/95 flex items-center">
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+              <TrendingUp size={14} className="text-primary" />
+            </div>
+            Active Investments
+          </h3>
 
           {activeInvestments.map((investment) => (
-            <Card key={investment.id} className="investment-card">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
+            <Card key={investment.id} className="investment-card shine-effect overflow-hidden relative group">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/10 to-transparent opacity-30 -z-10"></div>
+              <CardContent className="p-5 relative z-10">
+                <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="font-medium">{investment.plan} Plan</p>
-                    <p className="text-2xl font-bold text-primary">{investment.amount} USDT</p>
+                    <p className="font-medium text-white/80">{investment.plan} Plan</p>
+                    <p className="text-2xl font-bold text-primary quantum-glow">{investment.amount} USDT</p>
                   </div>
-                  <Badge variant="outline" className="text-primary border-primary/20">
+                  <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 px-3 py-1 group-hover:bg-primary/10 transition-all duration-300">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse mr-1.5"></div>
                     Active
                   </Badge>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Daily Profit</span>
-                    <span className="text-primary font-medium">+{investment.dailyProfit} USDT</span>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-sm bg-white/5 p-3 rounded-lg border border-white/5 group-hover:border-primary/10 transition-all duration-300">
+                    <span className="text-white/60">Daily Profit</span>
+                    <span className="text-primary font-bold">+{investment.dailyProfit} USDT</span>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span>{investment.totalDays - investment.daysLeft}/{investment.totalDays} days</span>
+                      <span className="text-white/60">Progress</span>
+                      <span className="text-white/90">{investment.totalDays - investment.daysLeft}/{investment.totalDays} days</span>
                     </div>
                     <Progress
                       value={((investment.totalDays - investment.daysLeft) / investment.totalDays) * 100}
-                      className="h-2"
+                      className="h-2.5 rounded-full bg-white/10 overflow-hidden"
                     />
                   </div>
 
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Clock size={14} className="mr-1" />
+                  <div className="flex items-center text-sm text-white/60 bg-gradient-to-r from-primary/5 to-transparent p-2 rounded-lg">
+                    <Clock size={14} className="mr-1.5 text-primary/80" />
                     {investment.daysLeft} days remaining
                   </div>
                 </div>
@@ -169,55 +176,64 @@ export function InvestmentsTab() {
       )}
 
       {/* Investment Plans */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Investment Plans</h3>
+      <div className="space-y-5">
+        <h3 className="text-lg font-bold text-white/95 flex items-center">
+          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+            <Crown size={14} className="text-primary" />
+          </div>
+          Investment Plans
+        </h3>
 
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           {tariffPlans.map((plan) => (
-            <Card key={plan.id} className="investment-card relative overflow-hidden">
+            <Card key={plan.id} className="glass-card shine-effect relative overflow-hidden group border border-white/5 hover:border-primary/20 transition-all duration-300">
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-bl-lg">
-                  Popular
+                <div className="absolute -top-1 -right-1 z-10">
+                  <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg shadow-lg shadow-primary/20">
+                    POPULAR
+                  </div>
                 </div>
               )}
 
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-20 transition-all duration-300 -z-10"></div>
+
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${plan.color} flex items-center justify-center text-white`}>
+                  <div className={`w-14 h-14 rounded-full bg-gradient-to-r ${plan.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-all duration-300`}>
                     {plan.icon}
                   </div>
                   <div>
-                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{plan.code}</p>
+                    <CardTitle className="text-xl font-bold text-white">{plan.name}</CardTitle>
+                    <p className="text-sm text-primary/80">{plan.code}</p>
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent className="pt-0">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Min Amount</p>
-                      <p className="font-medium">{plan.minAmount} USDT</p>
+                    <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:border-primary/10 transition-all duration-300">
+                      <p className="text-white/60 mb-1">Min Amount</p>
+                      <p className="font-bold text-white group-hover:text-primary transition-colors duration-300">{plan.minAmount} USDT</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Max Amount</p>
-                      <p className="font-medium">{plan.maxAmount.toLocaleString()} USDT</p>
+                    <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:border-primary/10 transition-all duration-300">
+                      <p className="text-white/60 mb-1">Max Amount</p>
+                      <p className="font-bold text-white group-hover:text-primary transition-colors duration-300">{plan.maxAmount.toLocaleString()} USDT</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Daily Profit</p>
-                      <p className="font-medium text-primary">{plan.dailyPercent}%</p>
+                    <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:border-primary/10 transition-all duration-300">
+                      <p className="text-white/60 mb-1">Daily Profit</p>
+                      <p className="font-bold text-primary">{plan.dailyPercent}%</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Term</p>
-                      <p className="font-medium">{plan.termDays} days</p>
+                    <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:border-primary/10 transition-all duration-300">
+                      <p className="text-white/60 mb-1">Term</p>
+                      <p className="font-bold text-white group-hover:text-primary transition-colors duration-300">{plan.termDays} days</p>
                     </div>
                   </div>
 
-                  <div className="bg-muted/20 rounded-lg p-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Total Return</span>
-                      <span className="text-primary font-medium">
+                  <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-lg p-4 border border-primary/10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-white/80 font-medium">Total Return</span>
+                      <span className="text-primary font-bold text-lg">
                         {(plan.dailyPercent * plan.termDays).toFixed(1)}%
                       </span>
                     </div>
@@ -226,52 +242,67 @@ export function InvestmentsTab() {
                   <Dialog open={isDialogOpen && selectedPlan?.id === plan.id} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button
-                        className="w-full deposit-button"
+                        className="w-full deposit-button h-12 rounded-xl mt-2 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300"
                         onClick={() => setSelectedPlan(plan)}
                       >
-                        <TrendingUp size={16} className="mr-2" />
+                        <TrendingUp size={18} className="mr-2" />
                         Invest Now
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Invest in {plan.name} Plan</DialogTitle>
+                    <DialogContent className="bg-gradient-to-b from-card/95 to-card border border-white/10 shadow-xl">
+                      <DialogHeader className="pb-2">
+                        <DialogTitle className="text-xl font-bold text-white flex items-center">
+                          <div className={`mr-3 w-10 h-10 rounded-full bg-gradient-to-r ${plan.color} flex items-center justify-center`}>
+                            {plan.icon}
+                          </div>
+                          Invest in {plan.name} Plan
+                        </DialogTitle>
                       </DialogHeader>
 
-                      <div className="space-y-4">
+                      <div className="space-y-5 relative">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl -z-10 opacity-20"></div>
+
                         <div className="space-y-2">
-                          <Label htmlFor="amount">Investment Amount (USDT)</Label>
+                          <Label htmlFor="amount" className="text-white/90 font-medium">Investment Amount (USDT)</Label>
                           <Input
                             id="amount"
                             type="number"
                             placeholder={`Min: ${plan.minAmount}, Max: ${plan.maxAmount}`}
                             value={investmentAmount}
                             onChange={(e) => setInvestmentAmount(e.target.value)}
+                            className="border-white/10 bg-white/5 focus:border-primary/50 transition-all duration-300 h-12"
                           />
                         </div>
 
                         {investmentAmount && (
-                          <div className="bg-muted/20 rounded-lg p-3 space-y-2">
-                            <div className="flex justify-between text-sm">
-                              <span>Daily Profit:</span>
-                              <span className="text-primary">
-                                {calculateProfit(plan, parseFloat(investmentAmount) || 0).dailyProfit.toFixed(2)} USDT
+                          <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-xl p-4 border border-primary/10 space-y-3">
+                            <div className="flex justify-between">
+                              <span className="text-white/70">Daily Profit:</span>
+                              <span className="text-primary font-bold">
+                                +{calculateProfit(plan, parseFloat(investmentAmount) || 0).dailyProfit.toFixed(2)} USDT
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
-                              <span>Total Profit:</span>
-                              <span className="text-primary">
-                                {calculateProfit(plan, parseFloat(investmentAmount) || 0).totalProfit.toFixed(2)} USDT
+                            <div className="flex justify-between pt-2 border-t border-primary/10">
+                              <span className="text-white/70">Total Profit:</span>
+                              <span className="text-primary font-bold text-lg">
+                                +{calculateProfit(plan, parseFloat(investmentAmount) || 0).totalProfit.toFixed(2)} USDT
                               </span>
                             </div>
                           </div>
                         )}
 
-                        <div className="flex space-x-2">
-                          <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="flex-1">
+                        <div className="flex space-x-3 pt-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsDialogOpen(false)}
+                            className="flex-1 h-12 border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300"
+                          >
                             Cancel
                           </Button>
-                          <Button onClick={handleInvest} className="flex-1 deposit-button">
+                          <Button
+                            onClick={handleInvest}
+                            className="flex-1 deposit-button h-12 rounded-xl"
+                          >
                             Confirm Investment
                           </Button>
                         </div>
