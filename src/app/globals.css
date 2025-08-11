@@ -4,32 +4,32 @@
 
 @layer base {
   :root {
-    --background: 218 18% 8%;
+    --background: 216 28% 7%;
     --foreground: 0 0% 98%;
-    --card: 220 19% 11%;
+    --card: 215 25% 10%;
     --card-foreground: 0 0% 98%;
-    --popover: 220 19% 11%;
+    --popover: 215 25% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 76% 36%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 45 94% 56%;
+    --primary-foreground: 214 30% 15%;
     --secondary: 217 32% 17%;
     --secondary-foreground: 0 0% 98%;
     --muted: 217 32% 17%;
     --muted-foreground: 215 20% 65%;
-    --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 45 94% 56%;
+    --accent-foreground: 214 30% 15%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --warning: 45 93% 47%;
-    --warning-foreground: 0 0% 98%;
-    --border: 217 32% 17%;
+    --warning: 45 94% 56%;
+    --warning-foreground: 214 30% 15%;
+    --border: 215 25% 15%;
     --input: 217 32% 17%;
-    --ring: 142 76% 36%;
-    --chart-1: 142 76% 36%;
+    --ring: 45 94% 56%;
+    --chart-1: 45 94% 56%;
     --chart-2: 0 84% 60%;
-    --chart-3: 45 93% 47%;
+    --chart-3: 196 80% 53%;
     --chart-4: 262 83% 58%;
-    --chart-5: 200 98% 39%;
+    --chart-5: 325 80% 56%;
     --radius: 0.75rem;
   }
 }
@@ -55,7 +55,7 @@
 
 @layer components {
   .gradient-border {
-    @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-lg before:bg-gradient-to-r before:from-accent/20 before:to-primary/20;
+    @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-lg before:bg-gradient-to-r before:from-primary/40 before:to-accent/40 before:animate-gradient-xy;
   }
 
   .gradient-border > * {
@@ -63,26 +63,91 @@
   }
 
   .glow-effect {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.25);
   }
 
   .balance-card {
-    @apply bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-sm border border-border/50;
+    @apply bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-sm border border-border/50 relative overflow-hidden;
+  }
+
+  .balance-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 50%);
+    opacity: 0;
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 0.15; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+
+  @keyframes gradient-xy {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animate-gradient-xy {
+    background-size: 400% 400%;
+    animation: gradient-xy 15s ease infinite;
   }
 
   .investment-card {
-    @apply bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300;
+    @apply bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 backdrop-blur-md;
   }
 
   .deposit-button {
-    @apply bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground;
+    @apply bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300;
   }
 
   .withdraw-button {
-    @apply bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 text-destructive-foreground;
+    @apply bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 text-destructive-foreground shadow-md shadow-destructive/20 hover:shadow-lg hover:shadow-destructive/30 transition-all duration-300;
   }
 
   .promote-button {
-    @apply bg-gradient-to-r from-warning to-warning/80 hover:from-warning/90 hover:to-warning/70 text-warning-foreground;
+    @apply bg-gradient-to-r from-warning to-warning/80 hover:from-warning/90 hover:to-warning/70 text-warning-foreground shadow-md shadow-warning/20 hover:shadow-lg hover:shadow-warning/30 transition-all duration-300;
+  }
+
+  .glass-card {
+    @apply bg-gradient-to-br from-card/90 via-card/80 to-card/60 backdrop-blur-md border border-white/10;
+  }
+
+  .quantum-glow {
+    text-shadow: 0 0 15px hsl(var(--primary) / 0.5);
+  }
+
+  .shine-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 70%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    transform: rotate(25deg);
+    animation: shine 6s ease-in-out infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    20% { transform: translateX(100%) rotate(25deg); }
+    100% { transform: translateX(100%) rotate(25deg); }
   }
 }
