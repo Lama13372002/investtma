@@ -36,9 +36,6 @@ export function LoadingScreen() {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             QUANTUM
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            AI Investment Platform
-          </p>
         </div>
 
         {/* Loading indicator */}
