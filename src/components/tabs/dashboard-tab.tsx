@@ -6,10 +6,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 export function DashboardTab() {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [withdrawAddress, setWithdrawAddress] = useState('');
+  const [selectedNetwork, setSelectedNetwork] = useState('TRON');
+  const { toast } = useToast();
+
+  const networks = [
+    { value: 'TRON', label: 'TRON (TRC20)', fee: '1.70 USDT' },
+    { value: 'BSC', label: 'BSC (BEP20)', fee: '0.30 USDT' },
+    { value: 'ETH', label: 'Ethereum (ERC20)', fee: '10.00 USDT' },
+    { value: 'POLYGON', label: 'Polygon (POS)', fee: '0.01 USDT' }
+  ];
 
   useEffect(() => {
     // Trigger animation after mount
@@ -37,6 +56,64 @@ export function DashboardTab() {
 
   const formatBalance = (amount: number) => {
     return balanceVisible ? `${amount.toFixed(2)} USDT` : '••••• USDT';
+  };
+
+  const handleDeposit = () => {
+    if (!depositAmount || parseFloat(depositAmount) < 10) {
+      toast({
+        title: "Invalid Amount",
+        description: "Minimum deposit amount is 10 USDT",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // В реальном приложении здесь будет создание платежа через Cryptomus API
+    toast({
+      title: "Deposit Initiated",
+      description: "You will receive payment instructions shortly",
+    });
+    setDepositOpen(false);
+    setDepositAmount('');
+  };
+
+  const handleWithdraw = () => {
+    if (!withdrawAmount || !withdrawAddress) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const amount = parseFloat(withdrawAmount);
+    if (amount < 10) {
+      toast({
+        title: "Invalid Amount",
+        description: "Minimum withdrawal amount is 10 USDT",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (amount > mockData.balance.available) {
+      toast({
+        title: "Insufficient Balance",
+        description: "Not enough available balance",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // В реальном приложении здесь будет создание выплаты через Cryptomus API
+    toast({
+      title: "Withdrawal Request Submitted",
+      description: "Your withdrawal will be processed within 24 hours",
+    });
+    setWithdrawOpen(false);
+    setWithdrawAmount('');
+    setWithdrawAddress('');
   };
 
   return (
@@ -84,14 +161,143 @@ export function DashboardTab() {
               </div>
 
               <div className="flex space-x-2 pt-2">
-                <Button className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
-                  <ArrowDownRight size={16} className="mr-2" />
-                  Deposit
-                </Button>
-                <Button className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
-                  <ArrowUpRight size={16} className="mr-2" />
-                  Withdraw
-                </Button>
+                <Dialog open={depositOpen} onOpenChange={setDepositOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="deposit-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
+                      <ArrowDownRight size={16} className="mr-2" />
+                      Deposit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Deposit USDT</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="deposit-amount">Amount (USDT)</Label>
+                        <Input
+                          id="deposit-amount"
+                          type="number"
+                          placeholder="Minimum: 10 USDT"
+                          value={depositAmount}
+                          onChange={(e) => setDepositAmount(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="deposit-network">Network</Label>
+                        <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select network" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {networks.map((network) => (
+                              <SelectItem key={network.value} value={network.value}>
+                                {network.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="bg-muted/20 rounded-lg p-3">
+                        <p className="text-sm text-muted-foreground">
+                          Network: {networks.find(n => n.value === selectedNetwork)?.label}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Fee: {networks.find(n => n.value === selectedNetwork)?.fee}
+                        </p>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <Button variant="outline" onClick={() => setDepositOpen(false)} className="flex-1">
+                          Cancel
+                        </Button>
+                        <Button onClick={handleDeposit} className="flex-1 deposit-button">
+                          Generate Address
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="withdraw-button flex-1 transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95" size="sm">
+                      <ArrowUpRight size={16} className="mr-2" />
+                      Withdraw
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Withdraw USDT</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="withdraw-amount">Amount (USDT)</Label>
+                        <Input
+                          id="withdraw-amount"
+                          type="number"
+                          placeholder="Minimum: 10 USDT"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="withdraw-address">Wallet Address</Label>
+                        <Input
+                          id="withdraw-address"
+                          placeholder="Enter your wallet address"
+                          value={withdrawAddress}
+                          onChange={(e) => setWithdrawAddress(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="withdraw-network">Network</Label>
+                        <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select network" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {networks.map((network) => (
+                              <SelectItem key={network.value} value={network.value}>
+                                {network.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="bg-muted/20 rounded-lg p-3">
+                        <div className="flex justify-between text-sm">
+                          <span>Amount:</span>
+                          <span>{withdrawAmount || '0'} USDT</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Fee:</span>
+                          <span>{networks.find(n => n.value === selectedNetwork)?.fee}</span>
+                        </div>
+                        <div className="flex justify-between text-sm font-medium border-t pt-2 mt-2">
+                          <span>You will receive:</span>
+                          <span>{withdrawAmount ? (parseFloat(withdrawAmount) - parseFloat(networks.find(n => n.value === selectedNetwork)?.fee?.split(' ')[0] || '0')).toFixed(2) : '0'} USDT</span>
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <Button variant="outline" onClick={() => setWithdrawOpen(false)} className="flex-1">
+                          Cancel
+                        </Button>
+                        <Button onClick={handleWithdraw} className="flex-1 withdraw-button">
+                          Submit Withdrawal
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </CardContent>
