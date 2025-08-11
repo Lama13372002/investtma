@@ -55,7 +55,7 @@
 
 @layer components {
   .gradient-border {
-    @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-lg before:bg-gradient-to-r before:from-primary/40 before:to-accent/40 before:animate-gradient-xy;
+    @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-lg before:bg-gradient-to-r before:from-primary/40 before:to-accent/40 before:animate-gradient-xy before:pointer-events-none before:-z-10;
   }
 
   .gradient-border > * {
@@ -80,6 +80,8 @@
     background: radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 50%);
     opacity: 0;
     animation: pulse 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
   }
 
   @keyframes pulse {
@@ -143,6 +145,8 @@
     );
     transform: rotate(25deg);
     animation: shine 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
   }
 
   @keyframes shine {
