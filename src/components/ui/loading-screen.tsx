@@ -37,7 +37,7 @@ export function LoadingScreen() {
             QUANTUM
           </h1>
           <p className="text-sm font-medium bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mt-1">
-            QUANTUM AI TECHNOLOGIES LTD
+            AI TECHNOLOGIES LTD
           </p>
         </div>
 
