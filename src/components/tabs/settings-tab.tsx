@@ -237,16 +237,7 @@ export function SettingsTab() {
                       </div>
                     </div>
 
-                    {item.toggle ? (
-                      <Switch
-                        checked={item.checked}
-                        onCheckedChange={item.onToggle}
-                        onClick={(e) => e.stopPropagation()}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                      />
-                    ) : (
-                      <ChevronRight size={18} className="text-primary/50 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
-                    )}
+                    <ChevronRight size={18} className="text-primary/50 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
                   </div>
                 </div>
               ))}
