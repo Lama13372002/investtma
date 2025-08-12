@@ -172,40 +172,41 @@ export function DashboardTab() {
                       Deposit
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-gradient-to-b from-card/95 to-card border border-white/10 shadow-xl">
-                    <DialogHeader className="pb-2">
-                      <DialogTitle className="text-xl font-bold text-white flex items-center">
-                        <div className="mr-3 bg-primary/10 rounded-full p-2">
-                          <ArrowDownRight size={20} className="text-primary" />
+                  <DialogContent className="bg-gradient-to-br from-card/98 via-card/95 to-card/98 backdrop-blur-xl border border-primary/20 shadow-2xl shadow-primary/10 max-w-md mx-auto">
+                    <DialogHeader className="pb-4 border-b border-primary/10">
+                      <DialogTitle className="text-2xl font-bold text-white flex items-center bg-gradient-to-r from-white via-primary/90 to-white bg-clip-text text-transparent">
+                        <div className="mr-4 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full p-3 border border-primary/20 shadow-lg shadow-primary/20">
+                          <ArrowDownRight size={24} className="text-primary" />
                         </div>
                         Deposit USDT
                       </DialogTitle>
                     </DialogHeader>
 
-                    <div className="space-y-5 relative">
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl -z-10 opacity-20"></div>
+                    <div className="space-y-6 relative pt-2">
+                      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl -z-10 opacity-30"></div>
+                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-2xl -z-10 opacity-20"></div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="deposit-amount" className="text-white/90 font-medium">Amount (USDT)</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="deposit-amount" className="text-white/95 font-semibold text-sm tracking-wide">Amount (USDT)</Label>
                         <Input
                           id="deposit-amount"
                           type="number"
                           placeholder="Minimum: 10 USDT"
                           value={depositAmount}
                           onChange={(e) => setDepositAmount(e.target.value)}
-                          className="border-white/10 bg-white/5 focus:border-primary/50 transition-all duration-300 h-12"
+                          className="border-white/20 bg-gradient-to-r from-white/10 to-white/5 focus:border-primary/60 focus:bg-white/15 transition-all duration-300 h-14 rounded-xl text-white placeholder:text-white/50 shadow-inner"
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="deposit-network" className="text-white/90 font-medium">Network</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="deposit-network" className="text-white/95 font-semibold text-sm tracking-wide">Network</Label>
                         <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-                          <SelectTrigger className="border-white/10 bg-white/5 focus:border-primary/50 transition-all duration-300 h-12">
+                          <SelectTrigger className="border-white/20 bg-gradient-to-r from-white/10 to-white/5 focus:border-primary/60 transition-all duration-300 h-14 rounded-xl text-white shadow-inner">
                             <SelectValue placeholder="Select network" />
                           </SelectTrigger>
-                          <SelectContent className="bg-card border border-white/10">
+                          <SelectContent className="bg-gradient-to-b from-card via-card/95 to-card/90 border border-white/20 rounded-xl backdrop-blur-xl shadow-2xl">
                             {networks.map((network) => (
-                              <SelectItem key={network.value} value={network.value} className="focus:bg-primary/10 focus:text-primary hover:bg-primary/10 hover:text-primary">
+                              <SelectItem key={network.value} value={network.value} className="focus:bg-primary/15 focus:text-primary hover:bg-primary/10 hover:text-primary rounded-lg mx-1 my-0.5 transition-all duration-200">
                                 {network.label}
                               </SelectItem>
                             ))}
@@ -213,28 +214,28 @@ export function DashboardTab() {
                         </Select>
                       </div>
 
-                      <div className="bg-gradient-to-r from-primary/5 to-transparent rounded-xl p-4 border border-primary/10">
-                        <div className="flex justify-between text-sm mb-2">
-                          <span className="text-white/70">Network:</span>
-                          <span className="text-primary font-medium">{networks.find(n => n.value === selectedNetwork)?.label}</span>
+                      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-5 border border-primary/20 shadow-lg shadow-primary/5 backdrop-blur-sm">
+                        <div className="flex justify-between text-sm mb-3">
+                          <span className="text-white/80 font-medium">Network:</span>
+                          <span className="text-primary font-bold">{networks.find(n => n.value === selectedNetwork)?.label}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-white/70">Fee:</span>
-                          <span className="text-primary font-medium">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
+                          <span className="text-white/80 font-medium">Fee:</span>
+                          <span className="text-primary font-bold">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
                         </div>
                       </div>
 
-                      <div className="flex space-x-3 pt-2">
+                      <div className="flex space-x-4 pt-4">
                         <Button
                           variant="outline"
                           onClick={() => setDepositOpen(false)}
-                          className="flex-1 h-12 border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300"
+                          className="flex-1 h-14 border-white/20 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/30 transition-all duration-300 rounded-xl font-semibold"
                         >
                           Cancel
                         </Button>
                         <Button
                           onClick={handleDeposit}
-                          className="flex-1 deposit-button h-12 rounded-xl"
+                          className="flex-1 deposit-button h-14 rounded-xl font-semibold shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300"
                         >
                           Generate Address
                         </Button>
@@ -253,51 +254,52 @@ export function DashboardTab() {
                       Withdraw
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-gradient-to-b from-card/95 to-card border border-white/10 shadow-xl">
-                    <DialogHeader className="pb-2">
-                      <DialogTitle className="text-xl font-bold text-white flex items-center">
-                        <div className="mr-3 bg-destructive/10 rounded-full p-2">
-                          <ArrowUpRight size={20} className="text-destructive" />
+                  <DialogContent className="bg-gradient-to-br from-card/98 via-card/95 to-card/98 backdrop-blur-xl border border-destructive/20 shadow-2xl shadow-destructive/10 max-w-md mx-auto">
+                    <DialogHeader className="pb-4 border-b border-destructive/10">
+                      <DialogTitle className="text-2xl font-bold text-white flex items-center bg-gradient-to-r from-white via-destructive/90 to-white bg-clip-text text-transparent">
+                        <div className="mr-4 bg-gradient-to-br from-destructive/30 to-destructive/10 rounded-full p-3 border border-destructive/20 shadow-lg shadow-destructive/20">
+                          <ArrowUpRight size={24} className="text-destructive" />
                         </div>
                         Withdraw USDT
                       </DialogTitle>
                     </DialogHeader>
 
-                    <div className="space-y-5 relative">
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-destructive/10 rounded-full blur-3xl -z-10 opacity-20"></div>
+                    <div className="space-y-6 relative pt-2">
+                      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-destructive/20 to-destructive/5 rounded-full blur-3xl -z-10 opacity-30"></div>
+                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-destructive/10 to-transparent rounded-full blur-2xl -z-10 opacity-20"></div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="withdraw-amount" className="text-white/90 font-medium">Amount (USDT)</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="withdraw-amount" className="text-white/95 font-semibold text-sm tracking-wide">Amount (USDT)</Label>
                         <Input
                           id="withdraw-amount"
                           type="number"
                           placeholder="Minimum: 10 USDT"
                           value={withdrawAmount}
                           onChange={(e) => setWithdrawAmount(e.target.value)}
-                          className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12"
+                          className="border-white/20 bg-gradient-to-r from-white/10 to-white/5 focus:border-destructive/60 focus:bg-white/15 transition-all duration-300 h-14 rounded-xl text-white placeholder:text-white/50 shadow-inner"
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="withdraw-address" className="text-white/90 font-medium">Wallet Address</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="withdraw-address" className="text-white/95 font-semibold text-sm tracking-wide">Wallet Address</Label>
                         <Input
                           id="withdraw-address"
                           placeholder="Enter your wallet address"
                           value={withdrawAddress}
                           onChange={(e) => setWithdrawAddress(e.target.value)}
-                          className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12"
+                          className="border-white/20 bg-gradient-to-r from-white/10 to-white/5 focus:border-destructive/60 focus:bg-white/15 transition-all duration-300 h-14 rounded-xl text-white placeholder:text-white/50 shadow-inner"
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="withdraw-network" className="text-white/90 font-medium">Network</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="withdraw-network" className="text-white/95 font-semibold text-sm tracking-wide">Network</Label>
                         <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-                          <SelectTrigger className="border-white/10 bg-white/5 focus:border-destructive/50 transition-all duration-300 h-12">
+                          <SelectTrigger className="border-white/20 bg-gradient-to-r from-white/10 to-white/5 focus:border-destructive/60 transition-all duration-300 h-14 rounded-xl text-white shadow-inner">
                             <SelectValue placeholder="Select network" />
                           </SelectTrigger>
-                          <SelectContent className="bg-card border border-white/10">
+                          <SelectContent className="bg-gradient-to-b from-card via-card/95 to-card/90 border border-white/20 rounded-xl backdrop-blur-xl shadow-2xl">
                             {networks.map((network) => (
-                              <SelectItem key={network.value} value={network.value} className="focus:bg-destructive/10">
+                              <SelectItem key={network.value} value={network.value} className="focus:bg-destructive/15 focus:text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg mx-1 my-0.5 transition-all duration-200">
                                 {network.label}
                               </SelectItem>
                             ))}
@@ -305,32 +307,32 @@ export function DashboardTab() {
                         </Select>
                       </div>
 
-                      <div className="bg-gradient-to-r from-destructive/5 to-transparent rounded-xl p-4 border border-destructive/10">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-white/70">Amount:</span>
-                          <span className="text-white font-medium">{withdrawAmount || '0'} USDT</span>
+                      <div className="bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent rounded-2xl p-5 border border-destructive/20 shadow-lg shadow-destructive/5 backdrop-blur-sm">
+                        <div className="flex justify-between text-sm mb-3">
+                          <span className="text-white/80 font-medium">Amount:</span>
+                          <span className="text-white font-bold">{withdrawAmount || '0'} USDT</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-white/70">Fee:</span>
-                          <span className="text-white/90">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
+                        <div className="flex justify-between text-sm mb-3">
+                          <span className="text-white/80 font-medium">Fee:</span>
+                          <span className="text-white/90 font-bold">{networks.find(n => n.value === selectedNetwork)?.fee}</span>
                         </div>
-                        <div className="flex justify-between text-sm font-medium border-t border-destructive/10 pt-3 mt-3">
-                          <span className="text-white/80">You will receive:</span>
-                          <span className="text-destructive/90 font-bold">{withdrawAmount ? (parseFloat(withdrawAmount) - parseFloat(networks.find(n => n.value === selectedNetwork)?.fee?.split(' ')[0] || '0')).toFixed(2) : '0'} USDT</span>
+                        <div className="flex justify-between text-sm font-medium border-t border-destructive/20 pt-3">
+                          <span className="text-white/90 font-semibold">You will receive:</span>
+                          <span className="text-destructive font-bold text-lg">{withdrawAmount ? (parseFloat(withdrawAmount) - parseFloat(networks.find(n => n.value === selectedNetwork)?.fee?.split(' ')[0] || '0')).toFixed(2) : '0'} USDT</span>
                         </div>
                       </div>
 
-                      <div className="flex space-x-3 pt-2">
+                      <div className="flex space-x-4 pt-4">
                         <Button
                           variant="outline"
                           onClick={() => setWithdrawOpen(false)}
-                          className="flex-1 h-12 border-white/10 hover:bg-white/5 hover:text-white transition-all duration-300"
+                          className="flex-1 h-14 border-white/20 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/30 transition-all duration-300 rounded-xl font-semibold"
                         >
                           Cancel
                         </Button>
                         <Button
                           onClick={handleWithdraw}
-                          className="flex-1 withdraw-button h-12 rounded-xl"
+                          className="flex-1 withdraw-button h-14 rounded-xl font-semibold shadow-xl shadow-destructive/30 hover:shadow-2xl hover:shadow-destructive/40 transition-all duration-300"
                         >
                           Submit Withdrawal
                         </Button>
