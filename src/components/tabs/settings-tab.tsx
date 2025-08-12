@@ -258,7 +258,7 @@ export function SettingsTab() {
               QUANTUM
             </h3>
             <p className="text-sm text-primary/80 font-medium">Version 1.0.0</p>
-            <p className="text-xs text-white/60">© 2024 Quantum Investment</p>
+            <p className="text-xs text-white/60">© 2025 Quantum Investment</p>
           </div>
         </CardContent>
       </Card>
