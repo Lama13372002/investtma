@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, Users, Eye, EyeOff } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -412,24 +412,7 @@ export function DashboardTab() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className={`space-y-4 transition-all duration-700 ${
-        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-      }`} style={{ animationDelay: '300ms' }}>
-        <h3 className="text-lg font-semibold">Quick Actions</h3>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Button variant="outline" className="h-16 flex-col space-y-1 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-primary/50 group">
-            <TrendingUp size={20} className="transition-all duration-300 group-hover:scale-110 group-hover:text-primary" />
-            <span className="text-xs transition-all duration-300 group-hover:text-primary">Invest Now</span>
-          </Button>
-
-          <Button variant="outline" className="h-16 flex-col space-y-1 promote-button transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-            <Users size={20} className="transition-all duration-300 group-hover:scale-110" />
-            <span className="text-xs transition-all duration-300">Invite Friends</span>
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
