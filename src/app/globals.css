@@ -154,4 +154,33 @@
     20% { transform: translateX(100%) rotate(25deg); }
     100% { transform: translateX(100%) rotate(25deg); }
   }
+
+  /* Исправление белого фона в input полях */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+
+  /* Дополнительные стили для темных input полей */
+  input[class*="text-white"] {
+    background-color: transparent !important;
+    color: white !important;
+  }
+
+  input[class*="text-white"]:focus,
+  input[class*="text-white"]:active {
+    background-color: transparent !important;
+    color: white !important;
+  }
+
+  /* Принудительное сохранение стилей для input в модальных окнах */
+  .bg-gradient-to-r input {
+    background: inherit !important;
+    color: inherit !important;
+  }
 }
