@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, Eye, EyeOff } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, Users, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
