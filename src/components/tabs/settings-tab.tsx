@@ -4,28 +4,23 @@ import { useState } from 'react';
 import {
   User,
   Shield,
-  Globe,
-  Bell,
   HelpCircle,
   FileText,
   ChevronRight,
   CheckCircle,
   Clock,
   XCircle,
-  AlertTriangle,
-  Settings
+  AlertTriangle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 
 export function SettingsTab() {
-  const [language, setLanguage] = useState('en');
-  const [notifications, setNotifications] = useState(true);
   const [kycStatus, setKycStatus] = useState<'not_started' | 'pending' | 'completed' | 'declined'>('not_started');
   const { toast } = useToast();
 
@@ -35,14 +30,6 @@ export function SettingsTab() {
     toast({
       title: "KYC Verification Started",
       description: "You will be redirected to complete your verification",
-    });
-  };
-
-  const handleLanguageChange = (newLang: string) => {
-    setLanguage(newLang);
-    toast({
-      title: "Language Changed",
-      description: `Language switched to ${newLang === 'en' ? 'English' : 'Русский'}`,
     });
   };
 
@@ -86,42 +73,6 @@ export function SettingsTab() {
   };
 
   const settingsSections = [
-    {
-      title: 'Account',
-      items: [
-        {
-          icon: <User size={20} />,
-          label: 'Profile Information',
-          value: 'Manage your profile',
-          action: () => toast({ title: "Coming Soon", description: "Profile management will be available soon" })
-        },
-        {
-          icon: <Shield size={20} />,
-          label: 'Security',
-          value: 'Two-factor authentication',
-          action: () => toast({ title: "Coming Soon", description: "2FA setup will be available soon" })
-        }
-      ]
-    },
-    {
-      title: 'Preferences',
-      items: [
-        {
-          icon: <Globe size={20} />,
-          label: 'Language',
-          value: language === 'en' ? 'English' : 'Русский',
-          action: () => handleLanguageChange(language === 'en' ? 'ru' : 'en')
-        },
-        {
-          icon: <Bell size={20} />,
-          label: 'Notifications',
-          value: notifications ? 'Enabled' : 'Disabled',
-          toggle: true,
-          checked: notifications,
-          onToggle: setNotifications
-        }
-      ]
-    },
     {
       title: 'Support',
       items: [
@@ -263,9 +214,7 @@ export function SettingsTab() {
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-bold text-white/95 flex items-center">
               <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                {section.title === 'Account' && <User size={14} className="text-primary" />}
-                {section.title === 'Preferences' && <Settings size={14} className="text-primary" />}
-                {section.title === 'Support' && <HelpCircle size={14} className="text-primary" />}
+                <HelpCircle size={14} className="text-primary" />
               </div>
               {section.title}
             </CardTitle>
