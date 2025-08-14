@@ -199,3 +199,116 @@ export interface NavItem {
   icon: string;
   href: string;
 }
+
+// Database Result Types
+export interface WithdrawalDBResult {
+  id: number;
+  user_id: number;
+  telegram_id: number;
+  user_display: string;
+  amount: string; // numeric(38,18) returns as string
+  address: string;
+  fee: string; // numeric(38,18) returns as string
+  currency: string;
+  status: string;
+  network_code: string;
+  provider?: string;
+  provider_tx_id?: string;
+  provider_order_id?: string;
+  provider_uuid?: string;
+  payer_currency?: string;
+  payer_amount?: string; // numeric(38,18) returns as string
+  is_subtract?: boolean;
+  is_final?: boolean;
+  txid?: string;
+  requested_at: string;
+  processed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WithdrawalStatsDBResult {
+  status: string;
+  count: string;
+  total_amount: string;
+  total_fees?: string;
+}
+
+export interface WithdrawalStatsAccumulator {
+  [key: string]: {
+    count: number;
+    total_amount: number;
+    total_fees: number;
+  };
+}
+
+export interface TransactionDBResult {
+  id: number;
+  user_id: number;
+  currency: string;
+  type: string;
+  amount: string;
+  balance_before: string;
+  balance_after: string;
+  balance_change: string;
+  reference_id?: string;
+  reference_type?: string;
+  fee?: string;
+  description?: string;
+  date: string;
+  created_at: string;
+}
+
+export interface BalanceDBResult {
+  available: string;
+  bonus: string;
+  locked: string;
+}
+
+export interface DepositDBResult {
+  id: number;
+  user_id: number;
+  telegram_id: number;
+  user_display: string;
+  currency: string;
+  amount: string; // numeric(38,18) returns as string
+  status: string;
+  provider: string;
+  provider_tx_id?: string;
+  provider_order_id?: string;
+  provider_uuid?: string;
+  address?: string;
+  network_code?: string;
+  payer_currency?: string;
+  payer_amount?: string; // numeric(38,18) returns as string
+  merchant_amount?: string; // numeric(38,18) returns as string
+  payment_status?: string;
+  from_address?: string;
+  url?: string;
+  expired_at?: string;
+  confirmed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CountResult {
+  total: string;
+  pending_count?: string;
+}
+
+export interface InvestmentDBResult {
+  amount: string; // numeric(38,18) returns as string
+}
+
+export interface StatsDBResult {
+  status: string;
+  count: string;
+  total_amount: string;
+}
+
+export interface StatsAccumulator {
+  [key: string]: {
+    count: number;
+    total_amount: number;
+  };
+}
