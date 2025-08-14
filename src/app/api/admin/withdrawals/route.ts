@@ -1,6 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+interface WithdrawalDBResult {
+  id: number;
+  user_id: number;
+  telegram_id: number;
+  user_display: string;
+  amount: string;
+  address: string;
+  fee: string;
+  currency: string;
+  status: string;
+  network_code: string;
+  provider?: string;
+  provider_tx_id?: string;
+  requested_at: string;
+  processed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface WithdrawalStatsDBResult {
+  status: string;
+  count: string;
+  total_amount: string;
+}
+
+interface WithdrawalStatsAccumulator {
+  [key: string]: {
+    count: number;
+    total_amount: number;
+    total_fees: number;
+  };
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,7 +43,7 @@ export async function GET(request: NextRequest) {
     const user_id = searchParams.get('user_id');
 
     let whereClause = 'WHERE 1=1';
-    const queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     let paramIndex = 1;
 
     if (status) {
@@ -52,7 +85,7 @@ export async function GET(request: NextRequest) {
     const total = parseInt(countResult.rows[0].total);
 
     // Форматируем выводы
-    const withdrawals = withdrawalsResult.rows.map((withdrawal: any) => ({
+    const withdrawals = withdrawalsResult.rows.map((withdrawal: WithdrawalDBResult) => ({
       id: withdrawal.id,
       user_id: withdrawal.user_id,
       telegram_id: withdrawal.telegram_id,
@@ -90,7 +123,7 @@ export async function GET(request: NextRequest) {
        ORDER BY w.status`
     );
 
-    const stats = statsResult.rows.reduce((acc: any, row: any) => {
+    const stats = statsResult.rows.reduce((acc: WithdrawalStatsAccumulator, row: WithdrawalStatsDBResult) => {
       acc[row.status] = {
         count: parseInt(row.count),
         total_amount: parseFloat(row.total_amount || 0),
@@ -122,7 +155,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Admin withdrawals fetch error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
