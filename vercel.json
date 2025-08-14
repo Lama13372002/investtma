@@ -1,0 +1,24 @@
+{
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "CRYPTOMUS_MERCHANT_ID": "@cryptomus_merchant_id",
+    "CRYPTOMUS_API_KEY": "@cryptomus_api_key",
+    "CRYPTOMUS_PAYOUT_API_KEY": "@cryptomus_payout_api_key",
+    "CRYPTOMUS_PAYMENT_WEBHOOK_URL": "@cryptomus_payment_webhook_url",
+    "CRYPTOMUS_PAYOUT_WEBHOOK_URL": "@cryptomus_payout_webhook_url",
+    "NEXTAUTH_SECRET": "@nextauth_secret",
+    "NEXTAUTH_URL": "@nextauth_url",
+    "ADMIN_EMAIL": "@admin_email",
+    "ADMIN_PASSWORD_HASH": "@admin_password_hash"
+  },
+  "build": {
+    "env": {
+      "DATABASE_URL": "@database_url"
+    }
+  }
+}
