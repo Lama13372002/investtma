@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         }
       });
 
-    } catch (cryptomusError: any) {
+    } catch (cryptomusError: unknown) {
       console.error('Cryptomus payout error:', cryptomusError);
 
       // Откатываем статус и возвращаем средства
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Withdrawal processing error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
