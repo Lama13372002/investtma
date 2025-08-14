@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool, PoolClient, QueryResult } from 'pg';
 
 class Database {
   private pool: Pool;
@@ -10,7 +10,7 @@ class Database {
     });
   }
 
-  async query(text: string, params?: any[]): Promise<any> {
+  async query(text: string, params?: unknown[]): Promise<QueryResult<Record<string, unknown>>> {
     const client = await this.pool.connect();
     try {
       const result = await client.query(text, params);
