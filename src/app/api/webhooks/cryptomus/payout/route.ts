@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { cryptomusAPI, CryptomusWebhookPayout } from '@/lib/cryptomus';
+import { WithdrawalDBResult } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const withdrawal = withdrawalResult.rows[0];
+    const withdrawal = withdrawalResult.rows[0] as unknown as WithdrawalDBResult;
 
     // Маппинг статусов Cryptomus к нашим статусам
     const statusMapping: { [key: string]: string } = {
@@ -106,7 +107,7 @@ export async function POST(request: NextRequest) {
             );
 
             // Записываем комиссию, если есть
-            if (withdrawal.fee > 0) {
+            if (parseFloat(withdrawal.fee || '0') > 0) {
               await client.query(
                 `INSERT INTO ledger_entries
                  (user_id, currency, entry_type, amount, balance_available_delta, balance_bonus_delta, balance_locked_delta, related_withdrawal_id, created_at)
