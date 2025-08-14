@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Copy, ExternalLink, Clock, CheckCircle, XCircle, AlertCircle, Wallet } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowDownRight, ArrowUpRight, Copy, ExternalLink, Clock, CheckCircle, XCircle, AlertCircle, Wallet, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,14 +11,47 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { useTelegram } from '@/components/providers/telegram-provider';
+
+interface UserBalance {
+  available: number;
+  bonus: number;
+  locked: number;
+  total_invested: number;
+  total_balance: number;
+}
+
+interface Transaction {
+  id: number;
+  type: 'deposit' | 'withdrawal';
+  amount: number;
+  status: string;
+  network: string;
+  tx_hash?: string;
+  date: string;
+  fee: number;
+}
 
 export function WalletTab() {
+  const { user } = useTelegram();
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawAddress, setWithdrawAddress] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState('TRON');
   const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false);
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
+  const [isDepositLoading, setIsDepositLoading] = useState(false);
+  const [isWithdrawLoading, setIsWithdrawLoading] = useState(false);
+  const [balance, setBalance] = useState<UserBalance>({
+    available: 0,
+    bonus: 0,
+    locked: 0,
+    total_invested: 0,
+    total_balance: 0
+  });
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isBalanceLoading, setIsBalanceLoading] = useState(true);
+  const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
   const { toast } = useToast();
 
   const networks = [
@@ -28,41 +61,83 @@ export function WalletTab() {
     { value: 'POLYGON', label: 'Polygon (POS)', fee: '0.01 USDT' }
   ];
 
-  // Mock transaction history
-  const transactions = [
-    {
-      id: 1,
-      type: 'deposit',
-      amount: 500,
-      status: 'completed',
-      network: 'TRON',
-      txHash: '0x123...abc',
-      date: '2024-01-15 14:30',
-      fee: 0
-    },
-    {
-      id: 2,
-      type: 'withdrawal',
-      amount: 200,
-      status: 'pending',
-      network: 'BSC',
-      txHash: null,
-      date: '2024-01-14 10:15',
-      fee: 0.30
-    },
-    {
-      id: 3,
-      type: 'deposit',
-      amount: 1000,
-      status: 'completed',
-      network: 'TRON',
-      txHash: '0x456...def',
-      date: '2024-01-13 16:45',
-      fee: 0
-    }
-  ];
+  // Загрузка баланса пользователя
+  const loadBalance = async () => {
+    if (!user?.id) return;
 
-  const handleDeposit = () => {
+    try {
+      setIsBalanceLoading(true);
+      const response = await fetch(`/api/user/balance?user_id=${user.id}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setBalance(result.data);
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to load balance",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Balance loading error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load balance",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBalanceLoading(false);
+    }
+  };
+
+  // Загрузка истории транзакций
+  const loadTransactions = async () => {
+    if (!user?.id) return;
+
+    try {
+      setIsTransactionsLoading(true);
+      const response = await fetch(`/api/user/transactions?user_id=${user.id}&limit=10`);
+      const result = await response.json();
+
+      if (result.success) {
+        setTransactions(result.data.transactions);
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to load transactions",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Transactions loading error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load transactions",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTransactionsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      loadBalance();
+      loadTransactions();
+    }
+  }, [user?.id]);
+
+  const handleDeposit = async () => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!depositAmount || parseFloat(depositAmount) < 10) {
       toast({
         title: "Invalid Amount",
@@ -72,16 +147,77 @@ export function WalletTab() {
       return;
     }
 
-    // В реальном приложении здесь будет создание платежа через Cryptomus API
-    toast({
-      title: "Deposit Initiated",
-      description: "You will receive payment instructions shortly",
-    });
-    setIsDepositDialogOpen(false);
-    setDepositAmount('');
+    try {
+      setIsDepositLoading(true);
+
+      const response = await fetch('/api/deposits/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: depositAmount,
+          network: selectedNetwork,
+          user_id: user.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Deposit Created",
+          description: "Payment address generated successfully",
+        });
+
+        // Показываем адрес для оплаты
+        if (result.data.address) {
+          toast({
+            title: "Payment Address",
+            description: `Send ${depositAmount} USDT to: ${result.data.address}`,
+            duration: 10000,
+          });
+        }
+
+        // Открываем URL платежа если есть
+        if (result.data.payment_url) {
+          window.open(result.data.payment_url, '_blank');
+        }
+
+        setIsDepositDialogOpen(false);
+        setDepositAmount('');
+
+        // Обновляем транзакции
+        loadTransactions();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to create deposit",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Deposit error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create deposit. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDepositLoading(false);
+    }
   };
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!withdrawAmount || !withdrawAddress) {
       toast({
         title: "Missing Information",
@@ -101,14 +237,63 @@ export function WalletTab() {
       return;
     }
 
-    // В реальном приложении здесь будет создание выплаты через Cryptomus API
-    toast({
-      title: "Withdrawal Request Submitted",
-      description: "Your withdrawal will be processed within 24 hours",
-    });
-    setIsWithdrawDialogOpen(false);
-    setWithdrawAmount('');
-    setWithdrawAddress('');
+    if (amount > balance.available) {
+      toast({
+        title: "Insufficient Balance",
+        description: "You don't have enough available balance for this withdrawal",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsWithdrawLoading(true);
+
+      const response = await fetch('/api/withdrawals/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: withdrawAmount,
+          address: withdrawAddress,
+          network: selectedNetwork,
+          user_id: user.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Withdrawal Request Submitted",
+          description: "Your withdrawal will be processed by admin within 24 hours",
+        });
+
+        setIsWithdrawDialogOpen(false);
+        setWithdrawAmount('');
+        setWithdrawAddress('');
+
+        // Обновляем баланс и транзакции
+        loadBalance();
+        loadTransactions();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to create withdrawal",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Withdrawal error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create withdrawal. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsWithdrawLoading(false);
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -161,17 +346,31 @@ export function WalletTab() {
         <CardContent>
           <div className="space-y-6">
             <div className="text-center pt-2">
-              <p className="text-4xl font-bold text-primary quantum-glow tracking-wide">1,250.50 USDT</p>
-              <p className="text-sm text-white/60 mt-1">Available Balance</p>
+              {isBalanceLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <>
+                  <p className="text-4xl font-bold text-primary quantum-glow tracking-wide">
+                    {balance.available.toFixed(2)} USDT
+                  </p>
+                  <p className="text-sm text-white/60 mt-1">Available Balance</p>
+                </>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 rounded-lg glass-card border border-white/5 hover:border-warning/30 hover:bg-warning/5 transition-all duration-300 group">
-                <p className="text-lg font-bold text-warning quantum-glow">500.00 USDT</p>
+                <p className="text-lg font-bold text-warning quantum-glow">
+                  {isBalanceLoading ? '--' : balance.total_invested.toFixed(2)} USDT
+                </p>
                 <p className="text-xs text-white/60 mt-1 group-hover:text-warning/80 transition-colors duration-300">Locked in Investments</p>
               </div>
               <div className="text-center p-4 rounded-lg glass-card border border-white/5 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 group">
-                <p className="text-lg font-bold text-primary quantum-glow">75.25 USDT</p>
+                <p className="text-lg font-bold text-primary quantum-glow">
+                  {isBalanceLoading ? '--' : balance.bonus.toFixed(2)} USDT
+                </p>
                 <p className="text-xs text-white/60 mt-1 group-hover:text-primary/80 transition-colors duration-300">Referral Bonus</p>
               </div>
             </div>
@@ -251,9 +450,17 @@ export function WalletTab() {
                 </Button>
                 <Button
                   onClick={handleDeposit}
+                  disabled={isDepositLoading}
                   className="flex-1 deposit-button h-14 rounded-xl font-semibold shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300"
                 >
-                  Generate Address
+                  {isDepositLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Generate Address'
+                  )}
                 </Button>
               </div>
             </div>
@@ -345,9 +552,17 @@ export function WalletTab() {
                 </Button>
                 <Button
                   onClick={handleWithdraw}
+                  disabled={isWithdrawLoading}
                   className="flex-1 withdraw-button h-14 rounded-xl font-semibold shadow-xl shadow-destructive/30 hover:shadow-2xl hover:shadow-destructive/40 transition-all duration-300"
                 >
-                  Submit Withdrawal
+                  {isWithdrawLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Withdrawal'
+                  )}
                 </Button>
               </div>
             </div>
@@ -367,50 +582,63 @@ export function WalletTab() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4 pt-2">
-            {transactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between p-4 rounded-lg glass-card border border-white/5 hover:border-primary/20 transition-all duration-300 group">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${
-                    tx.type === 'deposit'
-                      ? 'bg-gradient-to-br from-primary/30 to-primary/10 shadow-primary/10'
-                      : 'bg-gradient-to-br from-destructive/30 to-destructive/10 shadow-destructive/10'
-                  } group-hover:scale-110 transition-all duration-300`}>
-                    {tx.type === 'deposit' ?
-                      <ArrowDownRight size={22} className="text-primary" /> :
-                      <ArrowUpRight size={22} className="text-destructive" />
-                    }
-                  </div>
-                  <div>
-                    <p className="font-bold capitalize text-white/90">{tx.type}</p>
-                    <p className="text-sm text-white/60 group-hover:text-primary/70 transition-colors duration-300">{tx.date}</p>
-                    <p className="text-xs text-white/50">{tx.network}</p>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <p className={`font-bold text-lg ${tx.type === 'deposit' ? 'text-primary' : 'text-white/90'}`}>
-                    {tx.type === 'deposit' ? '+' : '-'}{tx.amount} USDT
-                  </p>
-                  <div className="flex items-center space-x-2 justify-end mt-1">
-                    <Badge variant="outline" className={`${getStatusColor(tx.status)} px-2 py-0.5 group-hover:bg-white/5 transition-all duration-300`}>
-                      {getStatusIcon(tx.status)}
-                      <span className="ml-1 capitalize">{tx.status}</span>
-                    </Badge>
-                  </div>
-                  {tx.txHash && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToClipboard(tx.txHash!)}
-                      className="text-xs h-6 p-1 mt-1.5 text-primary/80 hover:text-primary hover:bg-primary/5"
-                    >
-                      <Copy size={12} className="mr-1" />
-                      Hash
-                    </Button>
-                  )}
-                </div>
+            {isTransactionsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <span className="ml-2 text-white/60">Loading transactions...</span>
               </div>
-            ))}
+            ) : transactions.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-white/60">No transactions yet</p>
+              </div>
+            ) : (
+              transactions.map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between p-4 rounded-lg glass-card border border-white/5 hover:border-primary/20 transition-all duration-300 group">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${
+                      tx.type === 'deposit'
+                        ? 'bg-gradient-to-br from-primary/30 to-primary/10 shadow-primary/10'
+                        : 'bg-gradient-to-br from-destructive/30 to-destructive/10 shadow-destructive/10'
+                    } group-hover:scale-110 transition-all duration-300`}>
+                      {tx.type === 'deposit' ?
+                        <ArrowDownRight size={22} className="text-primary" /> :
+                        <ArrowUpRight size={22} className="text-destructive" />
+                      }
+                    </div>
+                    <div>
+                      <p className="font-bold capitalize text-white/90">{tx.type}</p>
+                      <p className="text-sm text-white/60 group-hover:text-primary/70 transition-colors duration-300">
+                        {new Date(tx.date).toLocaleDateString()} {new Date(tx.date).toLocaleTimeString()}
+                      </p>
+                      <p className="text-xs text-white/50">{tx.network}</p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <p className={`font-bold text-lg ${tx.type === 'deposit' ? 'text-primary' : 'text-white/90'}`}>
+                      {tx.type === 'deposit' ? '+' : '-'}{tx.amount.toFixed(2)} USDT
+                    </p>
+                    <div className="flex items-center space-x-2 justify-end mt-1">
+                      <Badge variant="outline" className={`${getStatusColor(tx.status)} px-2 py-0.5 group-hover:bg-white/5 transition-all duration-300`}>
+                        {getStatusIcon(tx.status)}
+                        <span className="ml-1 capitalize">{tx.status}</span>
+                      </Badge>
+                    </div>
+                    {tx.tx_hash && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(tx.tx_hash!)}
+                        className="text-xs h-6 p-1 mt-1.5 text-primary/80 hover:text-primary hover:bg-primary/5"
+                      >
+                        <Copy size={12} className="mr-1" />
+                        Hash
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
