@@ -107,7 +107,7 @@ class CryptomusAPI {
     this.payoutApiKey = process.env.CRYPTOMUS_PAYOUT_API_KEY || '';
   }
 
-  private generateSign(data: any, apiKey: string): string {
+  private generateSign(data: object, apiKey: string): string {
     const jsonData = JSON.stringify(data, null, 0);
     const base64Data = Buffer.from(jsonData).toString('base64');
     return crypto.createHash('md5').update(base64Data + apiKey).digest('hex');
@@ -115,9 +115,9 @@ class CryptomusAPI {
 
   private async makeRequest(
     endpoint: string,
-    data: any,
+    data: object,
     apiKey: string
-  ): Promise<any> {
+  ): Promise<unknown> {
     const sign = this.generateSign(data, apiKey);
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -144,7 +144,7 @@ class CryptomusAPI {
 
   // Получение информации о платеже
   async getPaymentInfo(uuid?: string, order_id?: string): Promise<CryptomusPaymentResponse> {
-    const data: any = {};
+    const data: Record<string, string> = {};
     if (uuid) data.uuid = uuid;
     if (order_id) data.order_id = order_id;
 
@@ -158,7 +158,7 @@ class CryptomusAPI {
 
   // Получение информации о выплате
   async getPayoutInfo(uuid?: string, order_id?: string): Promise<CryptomusPayoutResponse> {
-    const data: any = {};
+    const data: Record<string, string> = {};
     if (uuid) data.uuid = uuid;
     if (order_id) data.order_id = order_id;
 
@@ -166,17 +166,17 @@ class CryptomusAPI {
   }
 
   // Получение списка доступных сервисов для платежей
-  async getPaymentServices(): Promise<any> {
+  async getPaymentServices(): Promise<unknown> {
     return await this.makeRequest('/payment/services', {}, this.apiKey);
   }
 
   // Получение списка доступных сервисов для выплат
-  async getPayoutServices(): Promise<any> {
+  async getPayoutServices(): Promise<unknown> {
     return await this.makeRequest('/payout/services', {}, this.payoutApiKey);
   }
 
   // Проверка подписи webhook
-  verifyWebhookSignature(data: any, signature: string, isPayment: boolean = true): boolean {
+  verifyWebhookSignature(data: Record<string, unknown>, signature: string, isPayment: boolean = true): boolean {
     const { sign, ...dataWithoutSign } = data;
     const apiKey = isPayment ? this.apiKey : this.payoutApiKey;
     const expectedSign = this.generateSign(dataWithoutSign, apiKey);
