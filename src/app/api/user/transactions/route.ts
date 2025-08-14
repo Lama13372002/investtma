@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { TransactionDBResult } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -68,19 +69,22 @@ export async function GET(request: NextRequest) {
     const transactions = [
       ...depositsResult.rows,
       ...withdrawalsResult.rows
-    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-     .slice(offset, offset + limit);
+    ] as unknown as TransactionDBResult[];
+
+    const sortedTransactions = transactions
+      .sort((a, b) => new Date(String(b.date)).getTime() - new Date(String(a.date)).getTime())
+      .slice(offset, offset + limit);
 
     // Форматируем транзакции
-    const formattedTransactions = transactions.map(tx => ({
+    const formattedTransactions = sortedTransactions.map(tx => ({
       id: tx.id,
       type: tx.type,
-      amount: parseFloat(tx.amount),
-      status: tx.status,
-      network: tx.network,
-      tx_hash: tx.tx_hash,
-      date: new Date(tx.date).toISOString(),
-      fee: tx.fee ? parseFloat(tx.fee) : 0
+      amount: parseFloat(String(tx.amount)),
+      status: tx.type,
+      network: tx.currency,
+      tx_hash: tx.reference_id,
+      date: new Date(String(tx.date)).toISOString(),
+      fee: tx.fee ? parseFloat(String(tx.fee)) : 0
     }));
 
     return NextResponse.json({
