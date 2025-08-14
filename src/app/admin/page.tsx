@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,7 +50,7 @@ export default function AdminPage() {
   const { toast } = useToast();
 
   // Загрузка депозитов
-  const loadDeposits = async () => {
+  const loadDeposits = useCallback(async () => {
     try {
       setDepositsLoading(true);
       const response = await fetch('/api/admin/deposits?limit=50');
@@ -75,10 +75,10 @@ export default function AdminPage() {
     } finally {
       setDepositsLoading(false);
     }
-  };
+  }, [toast]);
 
   // Загрузка выводов
-  const loadWithdrawals = async () => {
+  const loadWithdrawals = useCallback(async () => {
     try {
       setWithdrawalsLoading(true);
       const response = await fetch('/api/admin/withdrawals?limit=50');
@@ -103,7 +103,7 @@ export default function AdminPage() {
     } finally {
       setWithdrawalsLoading(false);
     }
-  };
+  }, [toast]);
 
   // Обработка вывода
   const processWithdrawal = async (withdrawalId: number, action: 'approve' | 'reject') => {
@@ -154,7 +154,7 @@ export default function AdminPage() {
   useEffect(() => {
     loadDeposits();
     loadWithdrawals();
-  }, []);
+  }, [loadDeposits, loadWithdrawals]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
