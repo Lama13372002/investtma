@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Withdrawal creation error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
