@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { BalanceDBResult, InvestmentDBResult } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
     };
 
     if (balanceResult.rows.length > 0) {
-      const row = balanceResult.rows[0];
+      const row = balanceResult.rows[0] as unknown as BalanceDBResult;
       balance = {
         available: parseFloat(row.available),
         bonus: parseFloat(row.bonus),
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
       [userId, 'active']
     );
 
-    const totalInvested = investmentsResult.rows[0]?.total_invested || 0;
+    const totalInvested = (investmentsResult.rows[0] as unknown as InvestmentDBResult)?.amount || '0';
 
     return NextResponse.json({
       success: true,
