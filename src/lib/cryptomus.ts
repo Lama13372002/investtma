@@ -76,6 +76,7 @@ export interface CryptomusWebhookPayment {
   payer_currency: string;
   txid?: string;
   sign: string;
+  [key: string]: unknown; // Index signature for webhook verification
 }
 
 export interface CryptomusWebhookPayout {
@@ -93,6 +94,7 @@ export interface CryptomusWebhookPayout {
   payer_currency: string;
   payer_amount: string;
   sign: string;
+  [key: string]: unknown; // Index signature for webhook verification
 }
 
 class CryptomusAPI {
@@ -139,7 +141,7 @@ class CryptomusAPI {
 
   // Создание платежа (пополнение)
   async createPayment(data: CryptomusPaymentRequest): Promise<CryptomusPaymentResponse> {
-    return await this.makeRequest('/payment', data, this.apiKey);
+    return await this.makeRequest('/payment', data, this.apiKey) as CryptomusPaymentResponse;
   }
 
   // Получение информации о платеже
@@ -148,12 +150,12 @@ class CryptomusAPI {
     if (uuid) data.uuid = uuid;
     if (order_id) data.order_id = order_id;
 
-    return await this.makeRequest('/payment/info', data, this.apiKey);
+    return await this.makeRequest('/payment/info', data, this.apiKey) as CryptomusPaymentResponse;
   }
 
   // Создание выплаты (вывод)
   async createPayout(data: CryptomusPayoutRequest): Promise<CryptomusPayoutResponse> {
-    return await this.makeRequest('/payout', data, this.payoutApiKey);
+    return await this.makeRequest('/payout', data, this.payoutApiKey) as CryptomusPayoutResponse;
   }
 
   // Получение информации о выплате
@@ -162,7 +164,7 @@ class CryptomusAPI {
     if (uuid) data.uuid = uuid;
     if (order_id) data.order_id = order_id;
 
-    return await this.makeRequest('/payout/info', data, this.payoutApiKey);
+    return await this.makeRequest('/payout/info', data, this.payoutApiKey) as CryptomusPayoutResponse;
   }
 
   // Получение списка доступных сервисов для платежей
