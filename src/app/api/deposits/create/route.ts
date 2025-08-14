@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
           cryptomusResponse.result?.uuid,
           cryptomusResponse.result?.address,
           cryptomusResponse.result?.url,
-          new Date(cryptomusResponse.result?.expired_at! * 1000),
+          cryptomusResponse.result?.expired_at ? new Date(cryptomusResponse.result.expired_at * 1000) : null,
           cryptomusResponse.result?.status,
           depositId
         ]
@@ -109,12 +109,12 @@ export async function POST(request: NextRequest) {
           network: network,
           address: cryptomusResponse.result?.address,
           payment_url: cryptomusResponse.result?.url,
-          expires_at: new Date(cryptomusResponse.result?.expired_at! * 1000).toISOString(),
+          expires_at: cryptomusResponse.result?.expired_at ? new Date(cryptomusResponse.result.expired_at * 1000).toISOString() : null,
           status: cryptomusResponse.result?.status,
         }
       });
 
-    } catch (cryptomusError: any) {
+    } catch (cryptomusError: unknown) {
       // Обновляем статус депозита как failed
       await db.query(
         'UPDATE deposits SET status = $1, updated_at = NOW() WHERE id = $2',
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Deposit creation error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
