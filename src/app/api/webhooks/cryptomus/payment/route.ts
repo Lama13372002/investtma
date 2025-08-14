@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ success: true });
 
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       console.error('Database error processing payment webhook:', dbError);
 
       // Обновляем статус обработки webhook как failed
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Payment webhook error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
