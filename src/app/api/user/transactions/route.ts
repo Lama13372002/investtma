@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Transactions fetch error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
