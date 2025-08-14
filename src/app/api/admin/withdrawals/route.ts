@@ -1,38 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { WithdrawalDBResult, WithdrawalStatsDBResult, WithdrawalStatsAccumulator } from '@/types';
 
-interface WithdrawalDBResult {
-  id: number;
-  user_id: number;
-  telegram_id: number;
-  user_display: string;
-  amount: string;
-  address: string;
-  fee: string;
-  currency: string;
-  status: string;
-  network_code: string;
-  provider?: string;
-  provider_tx_id?: string;
-  requested_at: string;
-  processed_at?: string;
-  created_at: string;
-  updated_at: string;
-}
 
-interface WithdrawalStatsDBResult {
-  status: string;
-  count: string;
-  total_amount: string;
-}
-
-interface WithdrawalStatsAccumulator {
-  [key: string]: {
-    count: number;
-    total_amount: number;
-    total_fees: number;
-  };
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -82,10 +52,10 @@ export async function GET(request: NextRequest) {
       queryParams
     );
 
-    const total = parseInt(countResult.rows[0].total);
+    const total = parseInt((countResult.rows[0] as { total: string }).total);
 
     // Форматируем выводы
-    const withdrawals = withdrawalsResult.rows.map((withdrawal: WithdrawalDBResult) => ({
+    const withdrawals = (withdrawalsResult.rows as unknown as WithdrawalDBResult[]).map((withdrawal: WithdrawalDBResult) => ({
       id: withdrawal.id,
       user_id: withdrawal.user_id,
       telegram_id: withdrawal.telegram_id,
@@ -123,11 +93,11 @@ export async function GET(request: NextRequest) {
        ORDER BY w.status`
     );
 
-    const stats = statsResult.rows.reduce((acc: WithdrawalStatsAccumulator, row: WithdrawalStatsDBResult) => {
+    const stats = (statsResult.rows as unknown as WithdrawalStatsDBResult[]).reduce((acc: WithdrawalStatsAccumulator, row: WithdrawalStatsDBResult) => {
       acc[row.status] = {
         count: parseInt(row.count),
-        total_amount: parseFloat(row.total_amount || 0),
-        total_fees: parseFloat(row.total_fees || 0)
+        total_amount: parseFloat(row.total_amount || '0'),
+        total_fees: parseFloat(row.total_fees || '0')
       };
       return acc;
     }, {});
@@ -138,7 +108,7 @@ export async function GET(request: NextRequest) {
       ['pending']
     );
 
-    const pendingCount = parseInt(pendingResult.rows[0].pending_count);
+    const pendingCount = parseInt((pendingResult.rows[0] as { pending_count: string }).pending_count);
 
     return NextResponse.json({
       success: true,
