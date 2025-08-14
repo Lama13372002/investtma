@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ArrowDownRight, ArrowUpRight, Copy, ExternalLink, Clock, CheckCircle, XCircle, AlertCircle, Wallet, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,7 +62,7 @@ export function WalletTab() {
   ];
 
   // Загрузка баланса пользователя
-  const loadBalance = async () => {
+  const loadBalance = useCallback(async () => {
     if (!user?.id) return;
 
     try {
@@ -89,10 +89,10 @@ export function WalletTab() {
     } finally {
       setIsBalanceLoading(false);
     }
-  };
+  }, [user, toast]);
 
   // Загрузка истории транзакций
-  const loadTransactions = async () => {
+  const loadTransactions = useCallback(async () => {
     if (!user?.id) return;
 
     try {
@@ -119,14 +119,14 @@ export function WalletTab() {
     } finally {
       setIsTransactionsLoading(false);
     }
-  };
+  }, [user, toast]);
 
   useEffect(() => {
     if (user?.id) {
       loadBalance();
       loadTransactions();
     }
-  }, [user?.id]);
+  }, [user?.id, loadBalance, loadTransactions]);
 
   const handleDeposit = async () => {
     if (!user?.id) {
