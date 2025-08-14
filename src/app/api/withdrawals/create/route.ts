@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { BalanceDBResult } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const availableBalance = parseFloat(balanceResult.rows[0].available);
+    const availableBalance = parseFloat((balanceResult.rows[0] as unknown as BalanceDBResult).available);
     const withdrawalAmount = parseFloat(amount);
 
     if (availableBalance < withdrawalAmount) {
