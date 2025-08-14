@@ -1,47 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { DepositDBResult, CountResult, StatsDBResult, StatsAccumulator } from '@/types';
 
-interface DepositDBResult {
-  id: number;
-  user_id: number;
-  telegram_id: number;
-  user_display: string;
-  amount: string;
-  merchant_amount?: string;
-  payer_amount?: string;
-  currency: string;
-  status: string;
-  payment_status: string;
-  provider: string;
-  provider_order_id?: string;
-  provider_uuid?: string;
-  network_code: string;
-  address?: string;
-  from_address?: string;
-  provider_tx_id?: string;
-  url?: string;
-  confirmed_at?: string;
-  expired_at?: string;
-  created_at: string;
-  updated_at: string;
-}
 
-interface StatsDBResult {
-  status: string;
-  count: string;
-  total_amount: string;
-}
-
-interface StatsAccumulator {
-  [key: string]: {
-    count: number;
-    total_amount: number;
-  };
-}
-
-interface CountResult {
-  total: string;
-}
 
 export async function GET(request: NextRequest) {
   try {
