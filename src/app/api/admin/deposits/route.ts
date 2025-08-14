@@ -1,6 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+interface DepositDBResult {
+  id: number;
+  user_id: number;
+  telegram_id: number;
+  user_display: string;
+  amount: string;
+  merchant_amount?: string;
+  payer_amount?: string;
+  currency: string;
+  status: string;
+  payment_status: string;
+  provider: string;
+  provider_order_id?: string;
+  provider_uuid?: string;
+  network_code: string;
+  address?: string;
+  from_address?: string;
+  provider_tx_id?: string;
+  url?: string;
+  confirmed_at?: string;
+  expired_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface StatsDBResult {
+  status: string;
+  count: string;
+  total_amount: string;
+}
+
+interface StatsAccumulator {
+  [key: string]: {
+    count: number;
+    total_amount: number;
+  };
+}
+
+interface CountResult {
+  total: string;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,7 +52,7 @@ export async function GET(request: NextRequest) {
     const user_id = searchParams.get('user_id');
 
     let whereClause = 'WHERE 1=1';
-    const queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     let paramIndex = 1;
 
     if (status) {
@@ -49,10 +91,10 @@ export async function GET(request: NextRequest) {
       queryParams
     );
 
-    const total = parseInt(countResult.rows[0].total);
+    const total = parseInt((countResult.rows[0] as unknown as CountResult).total);
 
     // Форматируем депозиты
-    const deposits = depositsResult.rows.map((deposit: any) => ({
+    const deposits = (depositsResult.rows as unknown as DepositDBResult[]).map((deposit: DepositDBResult) => ({
       id: deposit.id,
       user_id: deposit.user_id,
       telegram_id: deposit.telegram_id,
@@ -89,10 +131,10 @@ export async function GET(request: NextRequest) {
        ORDER BY d.status`
     );
 
-    const stats = statsResult.rows.reduce((acc: any, row: any) => {
+    const stats = (statsResult.rows as unknown as StatsDBResult[]).reduce((acc: StatsAccumulator, row: StatsDBResult) => {
       acc[row.status] = {
         count: parseInt(row.count),
-        total_amount: parseFloat(row.total_amount || 0)
+        total_amount: parseFloat(row.total_amount || '0')
       };
       return acc;
     }, {});
@@ -111,7 +153,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Admin deposits fetch error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
