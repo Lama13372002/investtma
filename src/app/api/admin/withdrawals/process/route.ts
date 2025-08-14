@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { cryptomusAPI } from '@/lib/cryptomus';
+import { WithdrawalDBResult } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const withdrawal = withdrawalResult.rows[0];
+    const withdrawal = withdrawalResult.rows[0] as unknown as WithdrawalDBResult;
 
     if (action === 'reject') {
       // Отклоняем вывод и возвращаем средства
@@ -88,11 +89,11 @@ export async function POST(request: NextRequest) {
 
       // Создаем выплату в Cryptomus
       const cryptomusResponse = await cryptomusAPI.createPayout({
-        amount: withdrawal.amount.toString(),
+        amount: String(withdrawal.amount),
         currency: 'USDT',
-        order_id: withdrawal.provider_order_id,
-        address: withdrawal.address,
-        network: withdrawal.network_code,
+        order_id: String(withdrawal.provider_order_id || ''),
+        address: String(withdrawal.address),
+        network: String(withdrawal.network_code),
         is_subtract: true, // Комиссия с нашего баланса
         url_callback: process.env.CRYPTOMUS_PAYOUT_WEBHOOK_URL,
       });
